@@ -1,0 +1,75 @@
+.create-employee-container {
+    background-color: #f0f2f5;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .create-employee-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 26px;
+    font-weight: bold;
+  }
+  
+  .form {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .input-field {
+    padding: 14px;
+    border: 1px solid #d1d1d1;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #000;
+    outline: none;
+    transition: all 0.3s;
+    background-color: #f9f9f9;
+  }
+  
+  .input-field:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+    background-color: #fff;
+  }
+  
+  .create-button {
+    padding: 14px ;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .create-button:hover {
+    background-color: #388E3C;
+    transform: translateY(-3px);
+  }
+  
+  .create-button:active {
+    background-color: #2E7D32;
+    transform: translateY(0);
+  }
+  
+  .create-employee-container .form input::placeholder {
+    color: #999;
+    font-size: 14px;
+  }
+  
+  .create-employee-container .form input:focus::placeholder {
+    color: transparent;
+  }

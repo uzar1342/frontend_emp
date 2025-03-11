@@ -1,0 +1,91 @@
+.permissions-container {
+    width: 100vh;
+    background-color: #f0f2f5;
+    padding: 40px;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .permissions-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  /* ✅ User Grid */
+  .user-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  /* ✅ User Card */
+  .user-card {
+    background-color: #ffffff;
+    padding: 20px;
+    
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .user-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  }
+  
+  .user-card span {
+    display: block;
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  /* ✅ Role Buttons */
+  .user-card button {
+    width: 200px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+ 
+  }
+  
+  .user-card button:first-child {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .user-card button:first-child:hover {
+    background-color: #388E3C;
+  }
+  
+  .user-card button:last-child {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .user-card button:last-child:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* ✅ View Details Link */
+  .user-card a button {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .user-card a button:hover {
+    background-color: #0b7dda;
+  }
+  
+  /* ✅ Responsive Design */
+  @media (max-width: 768px) {
+    .user-grid {
+      grid-template-columns: 1fr;
+    }
+  }
