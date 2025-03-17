@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { showLoader, hideLoader } from '../redux/loaderSlice';
+
+import { API_URL } from '../services/api';
 import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import '../style/register.css';
 
 export function Register() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const dispatch = useDispatch();
   const handleRegister = async () => {
     try {
-      await axios.post('http://localhost:3000/api/auth/register', { username, password });
+       dispatch(showLoader());
+      await axios.post(`${API_URL}/api/auth/register`, { username, password });
       alert('Registration successful! Please login.');
     } catch (err) {
       alert('Registration failed');
+    }
+    finally {
+      dispatch(hideLoader());
     }
   };
 

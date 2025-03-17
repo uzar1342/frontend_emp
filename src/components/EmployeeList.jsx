@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { API_URL } from '../services/api';
-import '../style/EmployeeList.css';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchEmployees } from "../redux/employeesSlice";
+import { showLoader, hideLoader } from "../redux/loaderSlice";
+import axios from "axios";
+import { API_URL } from "../services/api";
+import "../style/EmployeeList.css";
 
 export function EmployeeList() {
-  const [employees, setEmployees] = useState([]);
+  const dispatch = useDispatch();
+  const { list: employees, status, error } = useSelector((state) => state.employees);
+  const role = useSelector((state) => state.auth.role);
+  const token = useSelector((state) => state.auth.token);
+
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [name, setName] = useState('');
-  const [position, setPosition] = useState('');
-  const [salary, setSalary] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('name');
+  const [name, setName] = useState("");
+  const [position, setPosition] = useState("");
+  const [salary, setSalary] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("name");
   const [currentPage, setCurrentPage] = useState(1);
   const [employeesPerPage] = useState(6);
-  const role = localStorage.getItem('role');
 
   useEffect(() => {
-    const endpoint = role === 'Admin' ? '/api/employees' : '/api/my-employees';
-    axios.get(`${API_URL}/api/employees`, {
-      headers: { Authorization: localStorage.getItem('token') }
-    }).then(res => setEmployees(res.data))
-    .catch(err => console.error(err));
-  }, [role]);
+    dispatch(showLoader());
+    dispatch(fetchEmployees()).finally(() => dispatch(hideLoader()));
+  }, [dispatch, role]);
 
   const handleEdit = (employee) => {
     setSelectedEmployee(employee);
@@ -30,32 +33,42 @@ export function EmployeeList() {
     setSalary(employee.salary);
   };
 
-  const handleUpdate = () => {
-    axios.put(`${API_URL}/api/employees/${selectedEmployee._id}`, { name, position, salary }, {
-      headers: { Authorization: localStorage.getItem('token') }
-    }).then(() => {
-      alert('Employee updated successfully');
+  const handleUpdate = async () => {
+    try {
+      await axios.put(
+        `${API_URL}/api/employees/${selectedEmployee._id}`,
+        { name, position, salary },
+        { headers: { Authorization: `${token}` } }
+      );
+      alert("Employee updated successfully");
       setSelectedEmployee(null);
-      window.location.reload();
-    });
+      dispatch(fetchEmployees());
+    } catch (error) {
+      console.error("Error updating employee:", error);
+    }
   };
 
-  const handleDelete = (id) => {
-    axios.delete(`${API_URL}/api/employees/${id}`, {
-      headers: { Authorization: localStorage.getItem('token') }
-    }).then(() => {
-      alert('Employee deleted successfully');
-      window.location.reload();
-    });
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this employee?")) return;
+
+    try {
+      await axios.delete(`${API_URL}/api/employees/${id}`, {
+        headers: { Authorization: `${token}` },
+      });
+      alert("Employee deleted successfully");
+      dispatch(fetchEmployees());
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+    }
   };
 
-  const filteredEmployees = employees.filter(emp => 
-    emp.name.toLowerCase().includes(searchTerm.toLowerCase())
-  ).sort((a, b) => {
-    if (sortBy === 'name') return a.name.localeCompare(b.name);
-    if (sortBy === 'position') return a.position.localeCompare(b.position);
-    if (sortBy === 'salary') return a.salary - b.salary;
-  });
+  const filteredEmployees = employees
+    .filter((emp) => emp.name.toLowerCase().includes(searchTerm.toLowerCase()))
+    .sort((a, b) => {
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      if (sortBy === "position") return a.position.localeCompare(b.position);
+      if (sortBy === "salary") return a.salary - b.salary;
+    });
 
   const indexOfLastEmployee = currentPage * employeesPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
@@ -63,9 +76,12 @@ export function EmployeeList() {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  if (status === "loading") return <p>Loading...</p>;
+  if (status === "failed") return <p>Error: {error}</p>;
+
   return (
     <div className="employee-list-container">
-      <h2>Employee List</h2>
+      <h2>{role === "Admin" ? "All Employees" : "My Employees"}</h2>
 
       <div className="filter-controls">
         <input
@@ -82,12 +98,12 @@ export function EmployeeList() {
       </div>
 
       <div className="employee-grid">
-        {currentEmployees.map(emp => (
+        {currentEmployees.map((emp) => (
           <div key={emp._id} className="employee-card">
             <h3>{emp.name}</h3>
             <p><strong>Position:</strong> {emp.position}</p>
             <p><strong>Salary:</strong> ${emp.salary}</p>
-            <p><strong>Created By:</strong> {emp.createdBy}</p>
+            {role === "Admin" && <p><strong>Created By:</strong> {emp.createdBy}</p>}
 
             <div className="employee-actions">
               <button className="edit-btn" onClick={() => handleEdit(emp)}>Edit</button>
@@ -97,16 +113,14 @@ export function EmployeeList() {
         ))}
       </div>
 
-      {/* ✅ Pagination */}
-      <div className="pagination">
+      <div className="pagination fixed-bottom">
         {Array.from({ length: Math.ceil(filteredEmployees.length / employeesPerPage) }, (_, i) => (
-          <button key={i} onClick={() => paginate(i + 1)}>
+          <button key={i} onClick={() => paginate(i + 1)} className={currentPage === i + 1 ? "active" : ""}>
             {i + 1}
           </button>
         ))}
       </div>
 
-      {/* ✅ Edit Employee Modal */}
       {selectedEmployee && (
         <div className="modal">
           <div className="modal-content">

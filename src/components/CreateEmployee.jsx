@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
+import { API_URL } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import '../style/CreateEmployee.css';
+import { showLoader, hideLoader } from '../redux/loaderSlice';
 
 export function CreateEmployee() {
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [position, setPosition] = useState('');
   const [salary, setSalary] = useState('');
   const navigate = useNavigate();
-
+  const username = useSelector((state) => state.auth.name);
   const handleCreate = async () => {
     try {
-      await axios.post('http://localhost:3000/api/employees', 
-        { name, position, salary }, 
+      dispatch(showLoader());
+      await axios.post(`${API_URL}/api/employees`, 
+        { name, position, salary,username }, 
         {
           headers: { Authorization: localStorage.getItem('token') }
         }
@@ -21,6 +26,9 @@ export function CreateEmployee() {
       navigate('/employees'); // Redirect to Employee List Page
     } catch (err) {
       alert('Failed to create employee');
+    }
+    finally {
+      dispatch(hideLoader());
     }
   };
 

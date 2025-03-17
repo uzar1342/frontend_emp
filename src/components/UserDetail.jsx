@@ -23,7 +23,7 @@ export function UserDetail() {
       <h2>User Detail</h2>
       <p><strong>Username:</strong> {user.username}</p>
       <p><strong>Role:</strong> {user.role}</p>
-      <p><strong>Created At:</strong> {new Date(user.createdAt).toLocaleDateString()}</p>
+      <p><strong>Created At:</strong> {new Date(user.createdOn).toLocaleDateString()}</p>
 
       <button onClick={() => navigate('/permissions')}>Back to List</button>
     </div>

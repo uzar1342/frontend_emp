@@ -1,8 +1,8 @@
 .permissions-container {
     width: 100vh;
     background-color: #f0f2f5;
-    padding: 40px;
-    min-height: 100vh;
+   
+    height: 80vh;
     font-family: 'Arial', sans-serif;
   }
   
@@ -17,7 +17,7 @@
   /* ✅ User Grid */
   .user-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 2fr));
     gap: 20px;
   }
   
